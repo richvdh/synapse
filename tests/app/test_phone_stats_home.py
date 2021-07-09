@@ -141,7 +141,6 @@ class PhoneHomeR30V2TestCase(HomeserverTestCase):
 
         # (give time for tables to be updated)
         self.reactor.advance(300)
-        self.reactor.advance(300)
 
         # Check the R30 results do not count that user.
         r30_results = self.get_success(self.hs.get_datastore().count_r30v2_users())
@@ -155,7 +154,6 @@ class PhoneHomeR30V2TestCase(HomeserverTestCase):
         self.reactor.advance(31 * DAY)
         # Also advance 10 minutes to let another user_daily_visits update occur
         self.reactor.advance(600)
-        self.reactor.advance(1)
 
         # (Make sure the user isn't somehow counted by this point.)
         r30_results = self.get_success(self.hs.get_datastore().count_r30v2_users())
@@ -169,7 +167,6 @@ class PhoneHomeR30V2TestCase(HomeserverTestCase):
         # We have to wait up a few minutes for the user_daily_visits table to
         # be updated by a background process.
         self.reactor.advance(300)
-        self.reactor.advance(1)
 
         # *Now* the user is counted.
         r30_results = self.get_success(self.hs.get_datastore().count_r30v2_users())
@@ -218,8 +215,7 @@ class PhoneHomeR30V2TestCase(HomeserverTestCase):
         )
         self.helper.send(room_id, "message", tok=access_token, custom_headers=headers)
 
-        self.reactor.advance(399)
-        self.reactor.advance(1)
+        self.reactor.advance(400)
 
         # Check the user does not contribute to R30 yet.
         r30_results = self.get_success(self.hs.get_datastore().count_r30v2_users())
@@ -229,14 +225,12 @@ class PhoneHomeR30V2TestCase(HomeserverTestCase):
 
         for _ in range(30):
             # This loop posts a message every day for 30 days
-            self.reactor.advance(DAY - 401)
-            self.reactor.advance(1)
+            self.reactor.advance(DAY - 400)
             self.helper.send(
                 room_id, "I'm still here", tok=access_token, custom_headers=headers
             )
 
-            self.reactor.advance(399)
-            self.reactor.advance(1)
+            self.reactor.advance(400)
 
             # Notice that the user *still* does not contribute to R30!
             r30_results = self.get_success(self.hs.get_datastore().count_r30v2_users())
@@ -246,14 +240,12 @@ class PhoneHomeR30V2TestCase(HomeserverTestCase):
 
         # (This advance needs to be split up into multiple advances
         #  because otherwise strict inequality hits.)
-        self.reactor.advance(DAY - 1)
-        self.reactor.advance(1)
+        self.reactor.advance(DAY)
         self.helper.send(
             room_id, "Still here!", tok=access_token, custom_headers=headers
         )
 
-        self.reactor.advance(399)
-        self.reactor.advance(1)
+        self.reactor.advance(400)
 
         # *Now* the user appears in R30.
         r30_results = self.get_success(self.hs.get_datastore().count_r30v2_users())
@@ -292,8 +284,6 @@ class PhoneHomeR30V2TestCase(HomeserverTestCase):
 
         # (give time for tables to update)
         self.reactor.advance(300)
-        self.reactor.advance(300)
-        self.reactor.advance(300)
 
         # Check that the user does not contribute to R30v2, even though it's been
         # more than 30 days since registration.
@@ -314,8 +304,6 @@ class PhoneHomeR30V2TestCase(HomeserverTestCase):
         self.helper.send(room_id, "message", tok=access_token, custom_headers=headers)
 
         # (give time for tables to update)
-        self.reactor.advance(300)
-        self.reactor.advance(300)
         self.reactor.advance(300)
 
         # Check the user now satisfies the requirements to appear in R30v2.
