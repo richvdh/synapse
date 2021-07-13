@@ -31,7 +31,6 @@ jobs:
 
   # now build the packages with a matrix build.
   build-debs:
-    if: false
     needs: get-distros
     name: "Build .deb packages"
     runs-on: ubuntu-latest
@@ -44,7 +43,10 @@ jobs:
         with:
           path: src
       - uses: actions/setup-python@v2
-      - run: ./src/scripts-dev/build_debian_packages "${{ matrix.distro }}"
+      #- run: ./src/scripts-dev/build_debian_packages "${{ matrix.distro }}"
+      - run: |
+          mkdir debs
+          touch debs/${{ matrix.distro }}.deb
       - uses: actions/upload-artifact@v2
         with:
           name: debs
@@ -75,5 +77,5 @@ jobs:
     steps:
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v2
-      - run: |
-          find .
+      - name: Build a tarball for the debs
+        run: tar -cJf debs.tar.xz debs
