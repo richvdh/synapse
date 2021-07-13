@@ -12,8 +12,8 @@ on:
     # from the right tag.
     tags: ["v*"]
 
-permissions:
-  contents: read
+#permissions:
+#  contents: read
 
 jobs:
   # first get the list of distros to build for.
@@ -67,11 +67,11 @@ jobs:
           name: python-dist
           path: dist/*
 
-  # if it's a tag, attach the artifacts to the tag
+  # if it's a tag, attach the artifacts to the release
   attach-assets:
     name: "Attach assets to release"
-    #if: startsWith(github.ref, 'refs/tags/')
-    if: always()
+    if: startsWith(github.ref, 'refs/tags/')
+    #if: always()
     needs:
       - build-debs
       - build-sdist
@@ -80,4 +80,12 @@ jobs:
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v2
       - name: Build a tarball for the debs
-        run: tar -cJf debs.tar.xz debs
+        run: tar -cvJf debs.tar.xz debs
+      - name: Attach to release
+        uses: softprops/action-gh-release@a929a66f232c1b11af63782948aa2210f981808a  # PR#109
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files:
+            - debs.tar.xz
+            - python-dist/*
