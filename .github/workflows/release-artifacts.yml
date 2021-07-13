@@ -46,7 +46,8 @@ jobs:
       #- run: ./src/scripts-dev/build_debian_packages "${{ matrix.distro }}"
       - run: |
           mkdir debs
-          touch debs/${{ matrix.distro }}.deb
+          dist=${{ matrix.distro }}
+          touch debs/${dist#*:}.deb
       - uses: actions/upload-artifact@v2
         with:
           name: debs
@@ -69,6 +70,7 @@ jobs:
   # if it's a tag, attach the artifacts to the tag
   attach-assets:
     name: "Attach assets to release"
+    #if: startsWith(github.ref, 'refs/tags/')
     if: always()
     needs:
       - build-debs
