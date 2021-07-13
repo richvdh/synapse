@@ -67,6 +67,7 @@ jobs:
   # if it's a tag, attach the artifacts to the tag
   attach-assets:
     name: "Attach assets to release"
+    if: always()
     needs:
       - build-debs
       - build-sdist
