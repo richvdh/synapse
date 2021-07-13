@@ -86,6 +86,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files:
-            - debs.tar.xz
-            - python-dist/*
+          files: |
+            debs.tar.xz
+            python-dist/*
