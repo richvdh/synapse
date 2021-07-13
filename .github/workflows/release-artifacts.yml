@@ -12,9 +12,9 @@ on:
     # from the right tag.
     tags: ["v*"]
 
-#permissions:
-#  contents: read
-
+permissions:
+  contents: write
+  
 jobs:
   # first get the list of distros to build for.
   get-distros:
