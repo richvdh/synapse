@@ -89,4 +89,4 @@ jobs:
             debs.tar.xz
             python-dist/*
           draft: true
-          prerelease: ${{ contains(github.ref, 'rc')
+          prerelease: ${{ contains(github.ref, 'rc') }}
