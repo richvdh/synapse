@@ -63,3 +63,16 @@ jobs:
         with:
           name: python-dist
           path: dist/*
+
+  # if it's a tag, attach the artifacts to the tag
+  attach-assets:
+    name: "Attach assets to release"
+    needs:
+      - build-debs
+      - build-sdist
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v2
+      - run: |
+          find .
